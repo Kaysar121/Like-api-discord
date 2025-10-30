@@ -142,9 +142,9 @@ async def refresh_zone(session, zone: str):
                 else:
                     count_fail += 1
             if processed_count % 20 == 0:
-                notify_discord(f"🔄 `{zone}`: {processed_count} tokens traités sur {len(accounts)}.")
+                notify_discord(f"🌀 `{zone}`: **{processed_count} tokens processed out of {len(accounts)}.**")
 
-        notify_discord(f"🔄 `{zone}`: {count_success} tokens OK, {count_fail} failed.")
+        notify_discord(f"🌀 `{zone}`: **{count_success} tokens OK, {count_fail} failed.**")
 
         # Get current SHA of token file
         _, sha = await get_github_file_content(session, REPO_TOKENS, token_path)
@@ -201,6 +201,7 @@ async def github_file_exists(session, filename: str) -> bool:
     url = f"https://api.github.com/repos/{REPO_TOKENS}/contents/{filename}"
     async with session.get(url, headers=HEADERS) as response:
         return response.status == 200
+
 
 
 
