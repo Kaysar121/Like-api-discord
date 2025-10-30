@@ -141,7 +141,7 @@ async def refresh_zone(session, zone: str):
                     count_success += 1
                 else:
                     count_fail += 1
-            if processed_count % 10 == 0:
+            if processed_count % 20 == 0:
                 notify_discord(f"🌀 `{zone}`: **{processed_count} tokens processed out of {len(accounts)}.**")
 
         notify_discord(f"**🌀** `{zone}`: **{count_success} tokens OK, {count_fail} failed.**")
@@ -201,6 +201,7 @@ async def github_file_exists(session, filename: str) -> bool:
     url = f"https://api.github.com/repos/{REPO_TOKENS}/contents/{filename}"
     async with session.get(url, headers=HEADERS) as response:
         return response.status == 200
+
 
 
 
