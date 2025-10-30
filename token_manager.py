@@ -23,7 +23,7 @@ GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 WEEBOOK_URL = os.getenv("WEEBOOK_URL")
 
 STALE_TOKEN_HOURS = 6      
-MAX_TOKENS = 150           
+MAX_TOKENS = 110           
 
 HEADERS = {
     "Authorization": f"token {GITHUB_TOKEN}",
@@ -201,5 +201,6 @@ async def github_file_exists(session, filename: str) -> bool:
     url = f"https://api.github.com/repos/{REPO_TOKENS}/contents/{filename}"
     async with session.get(url, headers=HEADERS) as response:
         return response.status == 200
+
 
 
