@@ -141,10 +141,10 @@ async def refresh_zone(session, zone: str):
                     count_success += 1
                 else:
                     count_fail += 1
-            if processed_count % 20 == 0:
+            if processed_count % 10 == 0:
                 notify_discord(f"🌀 `{zone}`: **{processed_count} tokens processed out of {len(accounts)}.**")
 
-        notify_discord(f"🌀 `{zone}`: **{count_success} tokens OK, {count_fail} failed.**")
+        notify_discord(f"**🌀** `{zone}`: **{count_success} tokens OK, {count_fail} failed.**")
 
         # Get current SHA of token file
         _, sha = await get_github_file_content(session, REPO_TOKENS, token_path)
@@ -154,11 +154,11 @@ async def refresh_zone(session, zone: str):
 
         if updated:
             last_commit_times[zone] = datetime.now(timezone.utc)
-            notify_discord(f"✅ `{token_path}` updated with {len(tokens)} tokens.")
+            notify_discord(f"**✅ **`{token_path}` **updated with {len(tokens)} tokens.**")
         else:
-            notify_discord(f"⚠️ Failed to update `{token_path}`.")
+            notify_discord(f"**⚠️ Failed to update **`{token_path}`.")
     except Exception as e:
-        notify_discord(f"❌ Error in zone `{zone}`: {str(e)}")
+        notify_discord(f"**❌ Error in zone **`{zone}`: {str(e)}")
 
 
 async def check_and_refresh_on_startup(session):
@@ -170,10 +170,10 @@ async def check_and_refresh_on_startup(session):
         token_path = f"tokens/token_{zone}.json"
         if not await github_file_exists(session, token_path):
             notify_discord("`                                     `")
-            notify_discord(f"⚠️ No token file found for `{zone}`. Generating now...")
+            notify_discord(f"**⚠️ No token file found for **`{zone}`. **Generating now...**")
             await refresh_zone(session, zone)
         else:
-            notify_discord(f"✅ Token file found for `{zone}`. Skipping initial refresh.")
+            notify_discord(f"**✅ Token file found for **`{zone}`. **Skipping initial refresh.**")
 
 
 async def check_token_validity(session):
@@ -184,12 +184,12 @@ async def check_token_validity(session):
             commit_dt = await get_github_file_commit_info(session, REPO_TOKENS, token_path)
 
             if commit_dt:
-                time_diff = datetime.now(timezone.utc) - commit_dt
+                time_diff = datetime.now(timezone.bst) - commit_dt
 
                 is_stale = time_diff > timedelta(hours=STALE_TOKEN_HOURS)
                 if is_stale:
                     notify_discord("`                                     `")
-                    notify_discord(f"⚠️ Tokens `{zone}` expired. Refreshing...")
+                    notify_discord(f"**⚠️ Tokens **`{zone}` **expired. Refreshing...**")
                     await refresh_zone(session, zone)
 
 
@@ -201,6 +201,7 @@ async def github_file_exists(session, filename: str) -> bool:
     url = f"https://api.github.com/repos/{REPO_TOKENS}/contents/{filename}"
     async with session.get(url, headers=HEADERS) as response:
         return response.status == 200
+
 
 
 
